@@ -1,4 +1,5 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, \
+    InlineKeyboardButton, InlineKeyboardMarkup
 
 b1 = KeyboardButton("1")
 b2 = KeyboardButton("2")
@@ -7,14 +8,23 @@ b4 = KeyboardButton("4")
 b5 = KeyboardButton("5")
 b6 = KeyboardButton("6")
 b7 = KeyboardButton("7")
+Yes = KeyboardButton("Да")
+No = KeyboardButton("Нет")
 del_button = KeyboardButton("/DELETE")
+instagram = InlineKeyboardButton("Instagram", url="https://www.instagram.com/")
+linked_in = InlineKeyboardButton("Linkedin", url="https://www.linkedin.com/")
 
 kb_client = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 answer1 = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-answer_speciality = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+answer_speciality_eng = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 del_keyb = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+lev_eng = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+answer_yes_no = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+social_media = InlineKeyboardMarkup()
 
 kb_client.add(b1)
 answer1.insert(b1).insert(b2).insert(b3).insert(b4)
-answer_speciality.insert(b1).insert(b2).insert(b3).insert(b4).insert(b5).insert(b6)
+answer_speciality_eng.insert(b1).insert(b2).insert(b3).insert(b4).insert(b5).insert(b6)
 del_keyb.add(del_button)
+answer_yes_no.add(Yes, No)
+social_media.row(instagram, linked_in)

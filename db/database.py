@@ -60,6 +60,10 @@ class Database:
 
     def set_eng(self, user_id, english):
         """Метод, который добавляет уровень владения английским"""
+        dct_ = {"1": "A1", "2": "A2", "3": "B1", "4": "B2",
+                "5": "C1", "6": "C2"}
+        if english in dct_:
+            english = dct_[english]
         with self.connection:
             return self.cursor.execute("UPDATE exlab SET english = ? WHERE user_id = ?",
                                        (english, user_id,))
@@ -72,14 +76,18 @@ class Database:
 
     def set_sourse(self, user_id, sourses):
         """Метод, который добавляет, откуда юзер узнал про ExLab"""
+        dct_ = {"1": "LinkedIn", "2": "Instagram", "3": "Facebook", "4": "Google",
+                "5": "Другие социальные сети", "6": "От друзей (по рекомендации)"}
+        if sourses in dct_:
+            sourses = dct_[sourses]
         with self.connection:
-            return self.cursor.execute("UPDATE exlab SET source = ? WHERE user_id = ?",
+            return self.cursor.execute("UPDATE exlab SET sourses = ? WHERE user_id = ?",
                                        (sourses, user_id,))
 
     def set_reason(self, user_id, reason):
         """Метод, который добавляет, причину регистрации в ExLab"""
         with self.connection:
-            return self.cursor.execute("UPDATE exlab SET joining_reason = ? WHERE user_id = ?",
+            return self.cursor.execute("UPDATE exlab SET reason = ? WHERE user_id = ?",
                                        (reason, user_id,))
 
     def set_idea(self,  user_id, idea):
