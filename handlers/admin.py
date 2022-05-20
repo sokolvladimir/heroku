@@ -67,8 +67,6 @@ async def question_courses(message: types.Message, state: FSMContext):
     await db.read_user(message.from_user.id, message)
     await state.finish()
 
-async def
-
 
 async def del_user(message: types.Message):
     db.user_del(message.from_user.id)
