@@ -7,6 +7,11 @@ class Database:
         self.connection = sqlite3.connect(db_file)
         self.cursor = self.connection.cursor()
 
+    def name_user(self, user_id):
+        """Метод который выводит имя пользователя из БД"""
+        for user in self.cursor.execute("SELECT user_name FROM exlab WHERE user_id = ?", (user_id,)):
+            return user
+
     def read_user(self, user_id, message):
         """Метод который выводит данные о пользователе из БД"""
         for user in self.cursor.execute("SELECT user_name, city FROM exlab WHERE user_id = ?", (user_id,)):
@@ -45,10 +50,7 @@ class Database:
     def set_speciality(self, user_id, speciality):
         """Метод, который добавляет специализацию юзера.
         Специализация: на чём специализируется в работе, в каких программах работает"""
-        dct_ = {"1": "Бэкэнд", "2": "Фронтэнд", "3": "Дизайн", "4": "Тестировка",
-                "5": "Мобильная разработка", "6": "Рекрутер"}
-        if speciality in dct_:
-            speciality = dct_[speciality]
+        speciality = speciality[11::]
         with self.connection:
             return self.cursor.execute("UPDATE exlab SET speciality = ? WHERE user_id = ?", (speciality, user_id,))
 
@@ -60,10 +62,7 @@ class Database:
 
     def set_eng(self, user_id, english):
         """Метод, который добавляет уровень владения английским"""
-        dct_ = {"1": "A1", "2": "A2", "3": "B1", "4": "B2",
-                "5": "C1", "6": "C2"}
-        if english in dct_:
-            english = dct_[english]
+        english = english[-2::]
         with self.connection:
             return self.cursor.execute("UPDATE exlab SET english = ? WHERE user_id = ?",
                                        (english, user_id,))
@@ -76,10 +75,7 @@ class Database:
 
     def set_sourse(self, user_id, sourses):
         """Метод, который добавляет, откуда юзер узнал про ExLab"""
-        dct_ = {"1": "LinkedIn", "2": "Instagram", "3": "Facebook", "4": "Google",
-                "5": "Другие социальные сети", "6": "От друзей (по рекомендации)"}
-        if sourses in dct_:
-            sourses = dct_[sourses]
+        sourses = sourses[7::]
         with self.connection:
             return self.cursor.execute("UPDATE exlab SET sourses = ? WHERE user_id = ?",
                                        (sourses, user_id,))
