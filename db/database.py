@@ -10,7 +10,7 @@ class Database:
     def name_user(self, user_id):
         """Метод который выводит имя пользователя из БД"""
         for user in self.cursor.execute("SELECT user_name FROM exlab WHERE user_id = ?", (user_id,)):
-            return user
+            return user[0]
 
     def read_user(self, user_id, message):
         """Метод который выводит данные о пользователе из БД"""

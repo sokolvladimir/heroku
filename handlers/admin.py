@@ -1,12 +1,9 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from create_bot import dp, bot
+from create_bot import bot
 from aiogram import types, Dispatcher
-from aiogram.types import ReplyKeyboardRemove
 from keyboards import *
 from create_bot import db
-import asyncio
-import time
 import emoji
 
 
@@ -22,7 +19,6 @@ class FSMAdmin(StatesGroup):
     question_9 = State()
 
 
-# @dp.message_handler(commands="start")
 async def start_program(message: types.Message):
     if not db.user_exists(int(message.from_user.id)):
         await message.answer(f"Привет {message.from_user.username}!\n"
@@ -35,55 +31,32 @@ async def start_program(message: types.Message):
                              f"нажмите на соответствующую кнопку=)", reply_markup=del_unsub)
 
 
-# @dp.callback_query_handler(text="start_quiz")
 async def start_question(call: types.CallbackQuery):
     db.add_user(call.from_user.id, call.from_user.username)
     await FSMAdmin.question_1.set()
     await bot.send_message(call.from_user.id, "Как вас зовут?" + emoji.emojize(":waving_hand:") +
                            "\nПример:\nФёдоров Алексей")
 
-# @dp.callback_query_handler(text="start_quiz")
-# async def start_question(message: types.Message):
-#     """Проверка прохождения теста пользователем"""
-#     if not db.user_exists(int(message.from_user.id)):
-#         db.add_user(message.from_user.id, message.from_user.username)
-#         await FSMAdmin.question_1.set()
-#         await message.answer("Как вас зовут?\nПример:\nФёдоров Алексей")
-#     else:
-#         await message.answer("Вы уже успешно прошли регистрацию!")
-#         await db.read_user(message.from_user.id, message)
 
-
-# @dp.message_handler(content_types=["text"], state=FSMAdmin.question_1)
 async def question_name(message: types.Message):
     db.set_username(message.from_user.id, message.text)
     await FSMAdmin.next()
     await message.answer(emoji.emojize(":cityscape:") + "Из какого вы города?")
 
 
-# @dp.message_handler(content_types=["text"], state=FSMAdmin.question_2)
 async def question_city(message: types.Message):
-        db.set_city(message.from_user.id, message.text)
-        await FSMAdmin.next()
-        await message.answer(emoji.emojize(":mechanic:") + "Какая у вас специальность?", reply_markup=kb_speciality)
+    db.set_city(message.from_user.id, message.text)
+    await FSMAdmin.next()
+    await message.answer(emoji.emojize(":mechanic:") + "Какая у вас специальность?", reply_markup=kb_speciality)
 
 
-# @dp.callback_query_handler(text_contains="speciality", state=FSMAdmin.question_3)
 async def question_speciality(call: types.CallbackQuery):
-    #await bot.delete_message(call.from_user.id, call.message.message_id)
     db.set_speciality(call.from_user.id, call.data)
     await FSMAdmin.next()
     await bot.send_message(call.from_user.id, emoji.emojize(":graduation_cap:") + "Как получал знания, какие "
                                                                                   "курсы заканчивал?")
 
-# @dp.message_handler(content_types=["text"], state=FSMAdmin.question_3)
-# async def question_speciality(message: types.Message, state: FSMContext):
-#     db.set_speciality(message.from_user.id, message.text)
-#     await FSMAdmin.next()
-#     await message.answer("Как получал знания, какие курсы заканчивал?")
 
-
-# @dp.message_handler(content_types=["text"], state=FSMAdmin.question_4)
 async def question_courses(message: types.Message, state: FSMContext):
     db.set_courses(message.from_user.id, message.text)
     await FSMAdmin.next()
@@ -91,7 +64,6 @@ async def question_courses(message: types.Message, state: FSMContext):
                          reply_markup=english_level)
 
 
-# @dp.message_handler(content_types=["text"], state=FSMAdmin.question_5)
 async def eng_lev(call: types.CallbackQuery):
     db.set_eng(call.from_user.id, call.data)
     await FSMAdmin.next()
@@ -100,7 +72,6 @@ async def eng_lev(call: types.CallbackQuery):
                                                                         "persone/")
 
 
-# @dp.message_handler(content_types=["text"], state=FSMAdmin.question_6)
 async def link_linkedin(message: types.Message, state: FSMContext):
     txt = "https://www.linkedin.com/"
     if txt not in message.text:
@@ -114,7 +85,6 @@ async def link_linkedin(message: types.Message, state: FSMContext):
         await message.answer(emoji.emojize(":ear:") + "Как ты узнал о ExLab?\n", reply_markup=source_exlab)
 
 
-# @dp.message_handler(content_types=["text"], state=FSMAdmin.question_7)
 async def sourse_exlab(call: types.CallbackQuery):
     db.set_sourse(call.from_user.id, call.data)
     await FSMAdmin.next()
@@ -122,7 +92,6 @@ async def sourse_exlab(call: types.CallbackQuery):
                                                             "к ExLab?" + emoji.emojize(":white_question_mark:"))
 
 
-# @dp.message_handler(content_types=["text"], state=FSMAdmin.question_8)
 async def reason_exlab(message: types.Message, state: FSMContext):
     db.set_reason(message.from_user.id, message.text)
     await FSMAdmin.next()
@@ -130,7 +99,6 @@ async def reason_exlab(message: types.Message, state: FSMContext):
                          "совместно реализовать?" + emoji.emojize(":gem_stone:"), reply_markup=answer_yes_no)
 
 
-# @dp.message_handler(content_types=["text"], state=FSMAdmin.question_9)
 async def idea_exlab(call: types.CallbackQuery, state: FSMContext):
     db.set_idea(call.from_user.id, call.data)
     await bot.send_message(call.from_user.id, text="Подписывайтесь на канал, " + emoji.emojize(":writing_hand:") +
@@ -150,7 +118,6 @@ async def unsubscribe(call: types.CallbackQuery):
         db.set_signup(call.from_user.id, 1)
         await call.message.delete()
         await bot.send_message(call.from_user.id, "Вы подписались на рассылку", reply_markup=del_unsub)
-
 
 
 async def del_user(call: types.CallbackQuery):
