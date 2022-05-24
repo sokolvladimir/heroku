@@ -5,8 +5,16 @@ import emoji
 
 social_media = InlineKeyboardMarkup(inline_keyboard=[
     [
-        InlineKeyboardButton("Instagram", url="https://www.instagram.com/"),
-        InlineKeyboardButton("Linkedin", url="https://www.linkedin.com/")
+        InlineKeyboardButton("Instagram", url="https://www.instagram.com/exlab_startUP/"),
+        InlineKeyboardButton("Linkedin", url="https://www.linkedin.com/"),
+    ],
+    [
+        InlineKeyboardButton("Telegram", url="https://t.me/ExLabChannel"),
+        InlineKeyboardButton("YouTube", url="https://www.youtube.com/")
+    ],
+    [
+        InlineKeyboardButton("Правила нашего сообщества", url="https://docs.google.com/document/d/1uC"
+                                                              "xWJUxWfDX0yK2_WGil0K-w5N5HK3HTxlxXvLlbNrI/edit")
     ]
 ])
 
@@ -19,19 +27,25 @@ answer_yes_no = InlineKeyboardMarkup(inline_keyboard=[
 # Кнопка вабора специальности
 kb_speciality = InlineKeyboardMarkup(row_width=1, inline_keyboard=[
     [
-        InlineKeyboardButton(text=emoji.emojize(':cowboy_hat_face:') + "Бэкэнд", callback_data="speciality_backend"),
-        InlineKeyboardButton(text=emoji.emojize(':smiling_face_with_sunglasses:') + "Фронтэнд",
+        InlineKeyboardButton(text=emoji.emojize(':cowboy_hat_face:') + "Backend", callback_data="speciality_backend"),
+        InlineKeyboardButton(text=emoji.emojize(':smiling_face_with_sunglasses:') + "Frontend",
                              callback_data="speciality_frontend")
 
     ],
     [
-        InlineKeyboardButton(text=emoji.emojize(':artist:') + "Дизайн", callback_data="speciality_design"),
+        InlineKeyboardButton(text=emoji.emojize(':artist:') + "Design", callback_data="speciality_design"),
         InlineKeyboardButton(text=emoji.emojize(':exploding_head:') + "Тестировка", callback_data="speciality_testing")
     ],
     [
-        InlineKeyboardButton(text=emoji.emojize(':man_technologist:') + "Мобильная разработка",
+        InlineKeyboardButton(text=emoji.emojize(':man_technologist:') + "Mobile development",
                          callback_data="speciality_mobile_dev"),
-        InlineKeyboardButton(text=emoji.emojize(':detective:') + "Рекрутер", callback_data="speciality_recruiter")
+        InlineKeyboardButton(text=emoji.emojize(':detective:') + "Recruiter, HR", callback_data="speciality_recruiter")
+
+    ],
+    [
+        InlineKeyboardButton(text=emoji.emojize(':person_facepalming:') + "QA",
+                             callback_data="speciality_QA"),
+        InlineKeyboardButton(text=emoji.emojize(':person_shrugging:') + "BA", callback_data="speciality_BA")
 
     ],
     [
@@ -46,12 +60,12 @@ source_exlab = InlineKeyboardMarkup(row_width=1, inline_keyboard=[
         InlineKeyboardButton(text="Instagram", callback_data="source_instagram")
     ],
     [
-        InlineKeyboardButton(text="Facebook", callback_data="source_facebook"),
-        InlineKeyboardButton(text="Google", callback_data="source_google")
+        InlineKeyboardButton(text="Другие социальные сети", callback_data="source_other_social"),
+        InlineKeyboardButton(text="Telegram", callback_data="source_Telegram")
     ],
     [
-        InlineKeyboardButton(text="Другие социальные сети", callback_data="source_etc"),
-        InlineKeyboardButton(text="От друзей", callback_data="source_friends")
+        InlineKeyboardButton(text="По рекомендации", callback_data="source_friends"),
+        InlineKeyboardButton(text="Другое", callback_data="source_etc")
     ]
 ])
 

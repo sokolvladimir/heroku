@@ -42,17 +42,29 @@ class Database:
         with self.connection:
             return self.cursor.execute("UPDATE exlab SET user_name = ? WHERE user_id = ?", (user_name, user_id,))
 
+    def birthday(self, user_id, date):
+        with self.connection:
+            return self.cursor.execute("UPDATE exlab SET birthday = ? WHERE user_id = ?", (date, user_id,))
+
     def set_city(self, user_id, city):
         """Метод, который добавляет гоород юзера"""
         with self.connection:
             return self.cursor.execute("UPDATE exlab SET city = ? WHERE user_id = ?", (city, user_id,))
 
     def set_speciality(self, user_id, speciality):
-        """Метод, который добавляет специализацию юзера.
-        Специализация: на чём специализируется в работе, в каких программах работает"""
-        speciality = speciality[11::]
+        """Метод, который добавляет специальность юзера.
+        Специальность: front, back, design, etc."""
+        if "speciality" in speciality:
+            speciality = speciality[11::]
         with self.connection:
             return self.cursor.execute("UPDATE exlab SET speciality = ? WHERE user_id = ?", (speciality, user_id,))
+
+    def set_specialization(self, user_id, specialization):
+        """Метод, который добавляет специализацию юзера.
+        Специализация: на чём специализируется в работе, в каких программах работает"""
+        with self.connection:
+            return self.cursor.execute("UPDATE exlab SET specialization = ? WHERE user_id = ?",
+                                       (specialization, user_id,))
 
     def set_courses(self, user_id, courses):
         """Метод, который добавляет пройденные курсы или самоучка"""
@@ -75,7 +87,8 @@ class Database:
 
     def set_sourse(self, user_id, sourses):
         """Метод, который добавляет, откуда юзер узнал про ExLab"""
-        sourses = sourses[7::]
+        if "source" in sourses:
+            sourses = sourses[7::]
         with self.connection:
             return self.cursor.execute("UPDATE exlab SET sourses = ? WHERE user_id = ?",
                                        (sourses, user_id,))
