@@ -16,7 +16,7 @@ social_media = InlineKeyboardMarkup(inline_keyboard=[
 
 join_group = InlineKeyboardMarkup(inline_keyboard=[
     [
-        InlineKeyboardButton("Вступить в exlab group", url="https://t.me/ExLabChannel")
+        InlineKeyboardButton("Вступить в exlab group", url="https://t.me/ExperienceLaboratory")
     ]
 ])
 
