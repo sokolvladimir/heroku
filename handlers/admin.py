@@ -6,6 +6,8 @@ from keyboards import *
 from create_bot import db
 import emoji
 import datetime
+import time
+from aiogram.types import KeyboardButton, ReplyKeyboardRemove
 
 
 class FSMAdmin(StatesGroup):
@@ -18,6 +20,7 @@ class FSMAdmin(StatesGroup):
     question_course = State()
     question_eng = State()
     question_linkedin = State()
+    question_portfolio = State()
     question_sours = State()
     question_sours_etc = State()
     question_reason = State()
@@ -39,26 +42,25 @@ async def start_question(call: types.CallbackQuery):
     db.add_user(call.from_user.id, call.from_user.username)
     await FSMAdmin.question_name.set()
     await bot.send_message(call.from_user.id, "Как тебя зовут?" + emoji.emojize(":waving_hand:") +
-                           "\nПример:\nФёдоров Алексей")
+                           "\n(фамилия имя)")
 
 
 async def question_name(message: types.Message):
     db.set_username(message.from_user.id, message.text)
     await FSMAdmin.next()
-    await message.answer(emoji.emojize(":baby:") + "Когда такая симпатюля появилась на свет?\nПример: 15/04/1985")
+    await message.answer(emoji.emojize(":baby:") + "Укажи дату рождения\n(dd.mm.yyyy)")
 
 
 async def birth_day(message: types.Message):
     try:
-        datetime.datetime.strptime(message.text, "%d/%m/%Y")
+        datetime.datetime.strptime(message.text, "%d.%m.%Y")
         db.birthday(message.from_user.id, message.text)
         await FSMAdmin.next()
-        await message.answer(emoji.emojize(":cityscape:") + "Укажите из какой вы страны и города\n"
-                                                            "Пример:\n"
-                                                            "Беларусь Минск")
+        await message.answer(emoji.emojize(":cityscape:") + "Откуда ты?\n"
+                                                            "Укажи страну и город")
     except ValueError:
         var = FSMAdmin.question_birth
-        await bot.send_message(message.from_user.id, "Введите корректную дату в формате: день/месяц/год")
+        await bot.send_message(message.from_user.id, "Введите корректную дату в формате: день.месяц.год")
 
 
 async def question_city(message: types.Message):
@@ -92,7 +94,7 @@ async def question_specialization(message: types.Message):
 async def question_courses(message: types.Message):
     db.set_courses(message.from_user.id, message.text)
     await FSMAdmin.next()
-    await message.answer(emoji.emojize(":face_with_tongue:") + "Какой у Вас уровень владения английским языком?",
+    await message.answer(emoji.emojize(":face_with_tongue:") + "Уровень владения английским?",
                          reply_markup=english_level)
 
 
@@ -115,6 +117,18 @@ async def link_linkedin(message: types.Message, state: FSMContext):
     else:
         db.set_links(message.from_user.id, message.text)
         await FSMAdmin.next()
+        await message.answer("Прикрепи ссылку на своё портфолио. Если оно есть",
+                             reply_markup=ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+                             .insert(KeyboardButton("Пропустить")))
+
+
+async def portfolio(message: types.Message):
+    if message.text == "Пропустить":
+        await FSMAdmin.next()
+        await message.answer(emoji.emojize(":ear:") + "Как ты узнал о ExLab?\n", reply_markup=source_exlab)
+    else:
+        db.set_portfolio(message.from_user.id, message.text)
+        await FSMAdmin.next()
         await message.answer(emoji.emojize(":ear:") + "Как ты узнал о ExLab?\n", reply_markup=source_exlab)
 
 
@@ -127,13 +141,15 @@ async def sourse_exlab_etc(message: types.Message):
 
 async def sourse_exlab(call: types.CallbackQuery):
     if call.data == "source_etc":
-        await bot.send_message(call.from_user.id, "Как именно вы о нас узнали?")
+        await call.message.delete()
+        await bot.send_message(call.from_user.id, "Как именно вы о нас узнали?", reply_markup=ReplyKeyboardRemove())
         await FSMAdmin.question_sours_etc.set()
     else:
         db.set_sourse(call.from_user.id, call.data)
         await FSMAdmin.question_reason.set()
         await bot.send_message(call.from_user.id, emoji.emojize(":white_question_mark:") + "Почему ты решил присоединиться "
-                                                            "к ExLab?" + emoji.emojize(":white_question_mark:"))
+                                                            "к ExLab?" + emoji.emojize(":white_question_mark:"),
+                               reply_markup=ReplyKeyboardRemove())
 
 
 async def reason_exlab(message: types.Message, state: FSMContext):
@@ -146,10 +162,14 @@ async def reason_exlab(message: types.Message, state: FSMContext):
 async def idea_exlab(call: types.CallbackQuery, state: FSMContext):
     db.set_idea(call.from_user.id, call.data)
     await call.message.delete()
-    await bot.send_message(call.from_user.id, text="Подписывайтесь на канал, " + emoji.emojize(":writing_hand:") +
-                         "ставьте лайки" + emoji.emojize(":thumbs_up:") + ", не забывайте нажать на колокольчик " +
-                         emoji.emojize(":bell:") + "что-бы не пропускать уведомления! " + emoji.emojize(":loudspeaker:")
-                         + "Вот ссылки на наши соц сети", reply_markup=social_media)
+    await bot.send_message(call.from_user.id, text="Добро пожаловать в exlab!\nВ нашей телеграмм-группе ты сможешь "
+                                                   "познакомиться с другими участниками проекта",
+                           reply_markup=join_group)
+    time.sleep(30)
+    await bot.send_message(call.from_user.id, text="Ознакомиться с правилами нашего сообщества", reply_markup=rules)
+    time.sleep(60)
+    await bot.send_message(call.from_user.id, text="Подписывайся на наши соц сети, чтобы быть вкусе всех новостей exlab"
+                           , reply_markup=social_media)
     await bot.send_message(call.from_user.id, "Спасибо за регистрацию. Рады, что ты с нами!", reply_markup=del_unsub)
     await state.finish()
 
@@ -186,6 +206,7 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(question_courses, content_types=["text"], state=FSMAdmin.question_course)
     dp.register_callback_query_handler(eng_lev, text_contains="en_level", state=FSMAdmin.question_eng)
     dp.register_message_handler(link_linkedin, content_types=["text"], state=FSMAdmin.question_linkedin)
+    dp.register_message_handler(portfolio, content_types=["text"], state=FSMAdmin.question_portfolio)
     dp.register_callback_query_handler(sourse_exlab, text_contains="source", state=FSMAdmin.question_sours)
     dp.register_message_handler(sourse_exlab_etc, content_types=["text"], state=FSMAdmin.question_sours_etc)
     dp.register_message_handler(reason_exlab, content_types=["text"], state=FSMAdmin.question_reason)

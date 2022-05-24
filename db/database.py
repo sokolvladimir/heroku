@@ -85,6 +85,10 @@ class Database:
             return self.cursor.execute("UPDATE exlab SET links = ? WHERE user_id = ?",
                                        (links, user_id,))
 
+    def set_portfolio(self, user_id, portfolio):
+        with self.connection:
+            return self.cursor.execute("UPDATE exlab SET portfolio = ? WHERE user_id = ?", (portfolio, user_id,))
+
     def set_sourse(self, user_id, sourses):
         """Метод, который добавляет, откуда юзер узнал про ExLab"""
         if "source" in sourses:
