@@ -46,19 +46,19 @@ async def start_question(call: types.CallbackQuery):
 async def question_name(message: types.Message):
     db.set_username(message.from_user.id, message.text)
     await FSMAdmin.next()
-    await message.answer(emoji.emojize(":baby:") + "Укажи дату рождения.\n(dd.mm.yyyy)")
+    await message.answer(emoji.emojize(":baby:") + "Укажи дату рождения.\n(yyyy-mm-dd)")
 
 
 async def birth_day(message: types.Message):
     try:
-        datetime.datetime.strptime(message.text, "%d.%m.%Y")
+        datetime.datetime.strptime(message.text, "%Y-%m-%d")
         db.birthday(message.from_user.id, message.text)
         await FSMAdmin.next()
         await message.answer(emoji.emojize(":cityscape:") + "Откуда ты?\n"
                                                             "Укажи страну и город.")
     except ValueError:
         var = FSMAdmin.question_birth
-        await bot.send_message(message.from_user.id, "Введите корректную дату в формате: день.месяц.год")
+        await bot.send_message(message.from_user.id, "Введите корректную дату в формате: год-месяц-день")
 
 
 async def question_city(message: types.Message):
@@ -174,11 +174,11 @@ async def idea_exlab(call: types.CallbackQuery, state: FSMContext):
 
 async def unsubscribe(call: types.CallbackQuery):
     if call.data == "unsubscribe":
-        db.set_signup(call.from_user.id, 0)
+        db.set_signup(call.from_user.id, False)
         await call.message.delete()
         await bot.send_message(call.from_user.id, "Ты отписался от рассылки", reply_markup=del_sub)
     else:
-        db.set_signup(call.from_user.id, 1)
+        db.set_signup(call.from_user.id, True)
         await call.message.delete()
         await bot.send_message(call.from_user.id, "Ты подписался на рассылку", reply_markup=del_unsub)
 
