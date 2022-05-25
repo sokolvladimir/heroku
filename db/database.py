@@ -12,12 +12,10 @@ class Database:
         for user in self.cursor.execute("SELECT user_name FROM exlab WHERE user_id = %s", (user_id,)):
             return user[0]
 
-    def read_user(self, user_id, message):
-        """Метод который выводит данные о пользователе из БД"""
-        for user in self.cursor.execute("SELECT user_name, city FROM exlab WHERE user_id = %s", (user_id,)):
-            return message.answer(f"Имя: {user[0]}\nГород: {user[1]}")
-        else:
-            return message.answer("Нет пользователя")
+    # def read_user(self, user_id):
+    #     """Метод который выводит данные о пользователе из БД"""
+    #     self.cursor.execute("SELECT * FROM exlab WHERE user_id = %s", (user_id,))
+    #     return print(self.cursor.fetchall())
 
     def user_del(self, user_id):
         """Метод удаляющий юзера из БД"""
@@ -34,9 +32,8 @@ class Database:
     def user_exists(self, user_id):
         """Метод, проверяет, существует ли такой юзер в таблице БД"""
         with self.connection:
-            result = self.cursor.execute("SELECT * FROM exlab WHERE user_id = %s", (user_id,))
-            return result
-                #bool(len(result))
+            self.cursor.execute("SELECT user_id FROM exlab WHERE user_id = %s LIMIT 1", (int(user_id),))
+            return self.cursor.fetchall()
 
     def set_username(self, user_id, user_name):
         """Метод, который добавляет имя юзера"""

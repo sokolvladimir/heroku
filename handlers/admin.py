@@ -9,7 +9,8 @@ import datetime
 import time
 from aiogram.types import KeyboardButton, ReplyKeyboardRemove
 import validators
-
+import psycopg2
+from psycopg2.errors import *
 
 class FSMAdmin(StatesGroup):
     question_name = State()
@@ -29,11 +30,14 @@ class FSMAdmin(StatesGroup):
 
 
 async def start_program(message: types.Message):
-    if db.user_exists(message.from_user.id):
+    if not db.user_exists(int(message.from_user.id)):
+        #db.user_exists(int(message.from_user.id))
+        print(db.user_exists(message.from_user.id))
         await message.answer(f"Привет! Я ExLab Registration Bot!\n" + emoji.emojize(":vulcan_salute:") +
                              f"Я помогу тебе пройти опрос и стать частью команды ExLab!", reply_markup=start_kb_first)
     else:
-        await message.answer("Привет!\nТы уже успешно прошел опрос.",)
+        print(db.user_exists(int(message.from_user.id)))
+        await message.answer("Привет!\nТы уже успешно прошел опрос.")
 
 
 async def start_question(call: types.CallbackQuery):
