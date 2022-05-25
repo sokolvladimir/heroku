@@ -101,17 +101,17 @@ start_kb_first = InlineKeyboardMarkup(inline_keyboard=[
     ]
 ])
 
-del_unsub = InlineKeyboardMarkup(inline_keyboard=[
-    [
-        InlineKeyboardButton(text=emoji.emojize(":skull_and_crossbones:") + "Удалить", callback_data="delete"),
-        InlineKeyboardButton(text=emoji.emojize(":smiling_face_with_horns:") + "Отписаться",
-                             callback_data="unsubscribe")
-    ]
-])
-
-del_sub = InlineKeyboardMarkup(inline_keyboard=[
-    [
-        InlineKeyboardButton(text=emoji.emojize(":skull_and_crossbones:") + "Удалить", callback_data="delete"),
-        InlineKeyboardButton(text=emoji.emojize(":smiling_face_with_halo:") + "Подписаться", callback_data="subscribe")
-    ]
-])
+# del_unsub = InlineKeyboardMarkup(inline_keyboard=[
+#     [
+#         InlineKeyboardButton(text=emoji.emojize(":skull_and_crossbones:") + "Удалить", callback_data="delete"),
+#         InlineKeyboardButton(text=emoji.emojize(":smiling_face_with_horns:") + "Отписаться",
+#                              callback_data="unsubscribe")
+#     ]
+# ])
+#
+# del_sub = InlineKeyboardMarkup(inline_keyboard=[
+#     [
+#         InlineKeyboardButton(text=emoji.emojize(":skull_and_crossbones:") + "Удалить", callback_data="delete"),
+#         InlineKeyboardButton(text=emoji.emojize(":smiling_face_with_halo:") + "Подписаться", callback_data="subscribe")
+#     ]
+# ])

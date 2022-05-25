@@ -1,3 +1,4 @@
 aiogram
 emoji
 psycopg2
+validators

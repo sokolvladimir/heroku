@@ -8,6 +8,7 @@ import emoji
 import datetime
 import time
 from aiogram.types import KeyboardButton, ReplyKeyboardRemove
+import validators
 
 
 class FSMAdmin(StatesGroup):
@@ -28,12 +29,11 @@ class FSMAdmin(StatesGroup):
 
 
 async def start_program(message: types.Message):
-    if not db.user_exists(int(message.from_user.id)):
+    if db.user_exists(message.from_user.id):
         await message.answer(f"Привет! Я ExLab Registration Bot!\n" + emoji.emojize(":vulcan_salute:") +
                              f"Я помогу тебе пройти опрос и стать частью команды ExLab!", reply_markup=start_kb_first)
     else:
-        await message.answer("Привет!\nТы уже успешно прошел опрос. Если ты не согласен с принципами нашего сообщества"
-                             " или не хочешь получать рассылку, дай нам знать!", reply_markup=del_unsub)
+        await message.answer("Привет!\nТы уже успешно прошел опрос.",)
 
 
 async def start_question(call: types.CallbackQuery):
@@ -46,25 +46,25 @@ async def start_question(call: types.CallbackQuery):
 async def question_name(message: types.Message):
     db.set_username(message.from_user.id, message.text)
     await FSMAdmin.next()
-    await message.answer(emoji.emojize(":baby:") + "Укажи дату рождения.\n(yyyy-mm-dd)")
+    await message.answer(emoji.emojize(":baby:") + "Укажи дату рождения.\n(dd.mm.yyyy)")
 
 
 async def birth_day(message: types.Message):
     try:
-        datetime.datetime.strptime(message.text, "%Y-%m-%d")
-        db.birthday(message.from_user.id, message.text)
+        date_correct_dbase_format = datetime.datetime.strptime(message.text, "%d.%m.%Y").strftime("%Y-%m-%d")
+        db.birthday(message.from_user.id, date_correct_dbase_format)
         await FSMAdmin.next()
         await message.answer(emoji.emojize(":cityscape:") + "Откуда ты?\n"
                                                             "Укажи страну и город.")
     except ValueError:
         var = FSMAdmin.question_birth
-        await bot.send_message(message.from_user.id, "Введите корректную дату в формате: год-месяц-день")
+        await bot.send_message(message.from_user.id, "Введите корректную дату в формате: день.месяц.год")
 
 
 async def question_city(message: types.Message):
     db.set_city(message.from_user.id, message.text)
     await FSMAdmin.next()
-    await message.answer(emoji.emojize(":mechanic:") + "Вернемся к специальности. Укажи свою специальность", reply_markup=kb_speciality)
+    await message.answer(emoji.emojize(":mechanic:") + "Выбери свою специальнось.", reply_markup=kb_speciality)
 
 
 async def my_speciality(message: types.Message):
@@ -75,7 +75,7 @@ async def my_speciality(message: types.Message):
 
 async def question_speciality(call: types.CallbackQuery):
     if call.data == "speciality_etc":
-        await bot.send_message(call.from_user.id, "Укажи свою специальность.")
+        await bot.send_message(call.from_user.id, "Какая у тебя специальность?")
         await FSMAdmin.question_spec_etc.set()
     else:
         db.set_speciality(call.from_user.id, call.data)
@@ -108,14 +108,14 @@ async def eng_lev(call: types.CallbackQuery):
 async def link_linkedin(message: types.Message, state: FSMContext):
     txt = "https://www.linkedin.com/"
     if txt not in message.text:
-        await message.answer(emoji.emojize(":face_screaming_in_fear:") + "Вы ввели некорректные данные! "
-                            "Попробуйте ещё!" + emoji.emojize(":face_screaming_in_fear:") +
+        await message.answer(emoji.emojize(":face_screaming_in_fear:") + "Ты ввел некорректные данные! "
+                            "Попробуйте еще!" + emoji.emojize(":face_screaming_in_fear:") +
                             "Пример: https://www.linkedin.com/in/persone/")
         var = FSMAdmin.question_linkedin
     else:
         db.set_links(message.from_user.id, message.text)
         await FSMAdmin.next()
-        await message.answer("Прикрепи ссылку на своё портфолио. Если оно есть.",
+        await message.answer("Прикрепи ссылку на свое портфолио. Если оно есть.",
                              reply_markup=ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
                              .insert(KeyboardButton("Пропустить")))
 
@@ -123,11 +123,15 @@ async def link_linkedin(message: types.Message, state: FSMContext):
 async def portfolio(message: types.Message):
     if message.text == "Пропустить":
         await FSMAdmin.next()
-        await message.answer(emoji.emojize(":ear:") + "Как ты узнал о ExLab?\n", reply_markup=source_exlab)
+        await message.answer(emoji.emojize(":ear:") + "как ты узнал об ExLab?\n", reply_markup=source_exlab)
     else:
-        db.set_portfolio(message.from_user.id, message.text)
-        await FSMAdmin.next()
-        await message.answer(emoji.emojize(":ear:") + "Как ты узнал о ExLab?\n", reply_markup=source_exlab)
+        if validators.url(message.text) is True:
+            db.set_portfolio(message.from_user.id, message.text)
+            await FSMAdmin.next()
+            await message.answer(emoji.emojize(":ear:") + "как ты узнал об ExLab?\n", reply_markup=source_exlab)
+        else:
+            await message.answer("!Ты ввел некорректный URL!\nПопробуй еще раз.")
+            await FSMAdmin.question_portfolio.set()
 
 
 async def sourse_exlab_etc(message: types.Message):
@@ -140,7 +144,7 @@ async def sourse_exlab_etc(message: types.Message):
 async def sourse_exlab(call: types.CallbackQuery):
     if call.data == "source_etc":
         await call.message.delete()
-        await bot.send_message(call.from_user.id, "Как именно вы о нас узнали?", reply_markup=ReplyKeyboardRemove())
+        await bot.send_message(call.from_user.id, "Как именно ты о нас узнал?", reply_markup=ReplyKeyboardRemove())
         await FSMAdmin.question_sours_etc.set()
     else:
         db.set_sourse(call.from_user.id, call.data)
@@ -163,24 +167,24 @@ async def idea_exlab(call: types.CallbackQuery, state: FSMContext):
     await bot.send_message(call.from_user.id, text="Добро пожаловать в ExLab!\nВ нашей телеграмм-группе ты сможешь "
                                                    "познакомиться с другими участниками проекта.",
                            reply_markup=join_group)
-    time.sleep(30)
+    time.sleep(5)
     await bot.send_message(call.from_user.id, text="Ознакомься с правилами нашего сообщества.", reply_markup=rules)
-    time.sleep(60)
-    await bot.send_message(call.from_user.id, text="Подписывайся на наши соц сети, чтобы быть в кусе всех новостей "
+    time.sleep(5)
+    await bot.send_message(call.from_user.id, text="Подписывайся на наши соц сети, чтобы быть в курсе всех новостей "
                                                    "ExLab.", reply_markup=social_media)
-    await bot.send_message(call.from_user.id, "Спасибо за регистрацию. Рады, что ты с нами!", reply_markup=del_unsub)
+    await bot.send_message(call.from_user.id, "Спасибо за регистрацию. Рады, что ты с нами!")
     await state.finish()
 
 
-async def unsubscribe(call: types.CallbackQuery):
-    if call.data == "unsubscribe":
-        db.set_signup(call.from_user.id, False)
-        await call.message.delete()
-        await bot.send_message(call.from_user.id, "Ты отписался от рассылки", reply_markup=del_sub)
-    else:
-        db.set_signup(call.from_user.id, True)
-        await call.message.delete()
-        await bot.send_message(call.from_user.id, "Ты подписался на рассылку", reply_markup=del_unsub)
+# async def unsubscribe(call: types.CallbackQuery):
+#     if call.data == "unsubscribe":
+#         db.set_signup(call.from_user.id, False)
+#         await call.message.delete()
+#         await bot.send_message(call.from_user.id, "Ты отписался от рассылки", reply_markup=del_sub)
+#     else:
+#         db.set_signup(call.from_user.id, True)
+#         await call.message.delete()
+#         await bot.send_message(call.from_user.id, "Ты подписался на рассылку", reply_markup=del_unsub)
 
 
 async def del_user(call: types.CallbackQuery):
@@ -210,4 +214,4 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(reason_exlab, content_types=["text"], state=FSMAdmin.question_reason)
     dp.register_callback_query_handler(idea_exlab, text=["YES", "NO"], state=FSMAdmin.question_idea)
     dp.register_callback_query_handler(del_user, text="delete")
-    dp.register_callback_query_handler(unsubscribe, text_contains="subscribe")
+    # dp.register_callback_query_handler(unsubscribe, text_contains="subscribe")
