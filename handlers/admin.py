@@ -33,8 +33,8 @@ async def start_program(message: types.Message):
     if not db.user_exists(int(message.from_user.id)):
         #db.user_exists(int(message.from_user.id))
         print(db.user_exists(message.from_user.id))
-        await message.answer(f"Привет! Я ExLab Registration Bot!\n" + emoji.emojize(":vulcan_salute:") +
-                             f"Я помогу тебе пройти опрос и стать частью команды ExLab!", reply_markup=start_kb_first)
+        await message.answer(f"Привет! Я Exlab Registration Bot!\n" + emoji.emojize(":vulcan_salute:") +
+                             f"Я помогу тебе пройти опрос и стать частью команды Exlab!", reply_markup=start_kb_first)
     else:
         print(db.user_exists(int(message.from_user.id)))
         await message.answer("Привет!\nТы уже успешно прошел опрос.")
@@ -113,9 +113,9 @@ async def link_linkedin(message: types.Message, state: FSMContext):
     txt = "https://www.linkedin.com/"
     if txt not in message.text:
         await message.answer(emoji.emojize(":face_screaming_in_fear:") + "Ты ввел некорректные данные! "
-                            "Попробуйте еще!" + emoji.emojize(":face_screaming_in_fear:") +
+                            "Попробуйте еще раз!" + emoji.emojize(":face_screaming_in_fear:") +
                             "Пример: https://www.linkedin.com/in/persone/")
-        var = FSMAdmin.question_linkedin
+        await FSMAdmin.question_linkedin.set()
     else:
         db.set_links(message.from_user.id, message.text)
         await FSMAdmin.next()
@@ -127,12 +127,12 @@ async def link_linkedin(message: types.Message, state: FSMContext):
 async def portfolio(message: types.Message):
     if message.text == "Пропустить":
         await FSMAdmin.next()
-        await message.answer(emoji.emojize(":ear:") + "как ты узнал об ExLab?\n", reply_markup=source_exlab)
+        await message.answer(emoji.emojize(":ear:") + "как ты узнал об Exlab?\n", reply_markup=source_exlab)
     else:
         if validators.url(message.text) is True:
             db.set_portfolio(message.from_user.id, message.text)
             await FSMAdmin.next()
-            await message.answer(emoji.emojize(":ear:") + "как ты узнал об ExLab?\n", reply_markup=source_exlab)
+            await message.answer(emoji.emojize(":ear:") + "как ты узнал об Exlab?\n", reply_markup=source_exlab)
         else:
             await message.answer("!Ты ввел некорректный URL!\nПопробуй еще раз.")
             await FSMAdmin.question_portfolio.set()
@@ -142,7 +142,7 @@ async def sourse_exlab_etc(message: types.Message):
     db.set_sourse(message.from_user.id, message.text)
     await FSMAdmin.next()
     await message.answer(emoji.emojize(":white_question_mark:") + "Почему ты решил присоединиться "
-                                                            "к ExLab?" + emoji.emojize(":white_question_mark:"))
+                                                            "к Exlab?" + emoji.emojize(":white_question_mark:"))
 
 
 async def sourse_exlab(call: types.CallbackQuery):
@@ -154,7 +154,7 @@ async def sourse_exlab(call: types.CallbackQuery):
         db.set_sourse(call.from_user.id, call.data)
         await FSMAdmin.question_reason.set()
         await bot.send_message(call.from_user.id, emoji.emojize(":white_question_mark:") +
-                               "Почему ты решил присоединиться к ExLab?" + emoji.emojize(":white_question_mark:"),
+                               "Почему ты решил присоединиться к Exlab?" + emoji.emojize(":white_question_mark:"),
                                reply_markup=ReplyKeyboardRemove())
 
 
@@ -167,15 +167,14 @@ async def reason_exlab(message: types.Message, state: FSMContext):
 
 async def idea_exlab(call: types.CallbackQuery, state: FSMContext):
     db.set_idea(call.from_user.id, call.data)
-    await call.message.delete()
-    await bot.send_message(call.from_user.id, text="Добро пожаловать в ExLab!\nВ нашей телеграмм-группе ты сможешь "
+    await bot.send_message(call.from_user.id, text="Добро пожаловать в Exlab!\nВ нашей телеграмм-группе ты сможешь "
                                                    "познакомиться с другими участниками проекта.",
                            reply_markup=join_group)
-    time.sleep(5)
+    time.sleep(10)
     await bot.send_message(call.from_user.id, text="Ознакомься с правилами нашего сообщества.", reply_markup=rules)
-    time.sleep(5)
+    time.sleep(10)
     await bot.send_message(call.from_user.id, text="Подписывайся на наши соц сети, чтобы быть в курсе всех новостей "
-                                                   "ExLab.", reply_markup=social_media)
+                                                   "Exlab.", reply_markup=social_media)
     await bot.send_message(call.from_user.id, "Спасибо за регистрацию. Рады, что ты с нами!")
     await state.finish()
 
