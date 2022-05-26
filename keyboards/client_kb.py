@@ -16,7 +16,7 @@ social_media = InlineKeyboardMarkup(inline_keyboard=[
 
 join_group = InlineKeyboardMarkup(inline_keyboard=[
     [
-        InlineKeyboardButton("Вступить в exlab group", url="https://t.me/ExperienceLaboratory")
+        InlineKeyboardButton("Вступить в ExLab group", url="https://t.me/ExperienceLaboratory")
     ]
 ])
 
@@ -43,21 +43,16 @@ kb_speciality = InlineKeyboardMarkup(row_width=1, inline_keyboard=[
     ],
     [
         InlineKeyboardButton(text=emoji.emojize(':artist:') + "Design", callback_data="speciality_design"),
-        InlineKeyboardButton(text=emoji.emojize(':exploding_head:') + "Тестировка", callback_data="speciality_testing")
-    ],
-    [
         InlineKeyboardButton(text=emoji.emojize(':man_technologist:') + "Mobile development",
-                         callback_data="speciality_mobile_dev"),
-        InlineKeyboardButton(text=emoji.emojize(':detective:') + "Recruiter, HR", callback_data="speciality_recruiter")
-
+                             callback_data="speciality_mobile_dev")
     ],
     [
+        InlineKeyboardButton(text=emoji.emojize(':detective:') + "Recruiter, HR", callback_data="speciality_recruiter"),
         InlineKeyboardButton(text=emoji.emojize(':person_facepalming:') + "QA",
-                             callback_data="speciality_QA"),
-        InlineKeyboardButton(text=emoji.emojize(':person_shrugging:') + "BA", callback_data="speciality_BA")
-
+                             callback_data="speciality_QA")
     ],
     [
+        InlineKeyboardButton(text=emoji.emojize(':person_shrugging:') + "BA", callback_data="speciality_BA"),
         InlineKeyboardButton(text=emoji.emojize(':face_with_rolling_eyes:') + "Другое", callback_data="speciality_etc")
     ]
 ])
