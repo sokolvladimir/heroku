@@ -146,7 +146,6 @@ async def sourse_exlab_etc(message: types.Message):
 
 async def sourse_exlab(call: types.CallbackQuery):
     if call.data == "source_etc":
-        await call.message.delete()
         await bot.send_message(call.from_user.id, "Как именно ты о нас узнал?", reply_markup=ReplyKeyboardRemove())
         await FSMAdmin.question_sours_etc.set()
     else:
