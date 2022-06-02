@@ -3,7 +3,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from create_bot import bot
 from aiogram import types, Dispatcher
 from keyboards import *
-from create_bot import db
+from create_bot import db, Nastya_id
 import emoji
 import datetime
 import time
@@ -165,6 +165,22 @@ async def reason_exlab(message: types.Message, state: FSMContext):
 
 async def idea_exlab(call: types.CallbackQuery, state: FSMContext):
     db.set_idea(call.from_user.id, call.data)
+    last_user = db.last_user(call.from_user.id)[0]
+    print(last_user)
+    await bot.send_message(Nastya_id, text=f"Наятя появился новый пользователь!!!"
+                                           f"\nИмя телеграм юзера: {last_user[1]}"
+                                           f"\nИмя Фамилия: {last_user[2]}"
+                                           f"\nДата рождения: {last_user[3]}"
+                                           f"\nГород: {last_user[4]}"
+                                           f"\nСпециальность: {last_user[5]}"
+                                           f"\nОбучение по специальности: {last_user[6]}"
+                                           f"\nСтек технологий: {last_user[7]}"
+                                           f"\nУровень английского: {last_user[8]}"
+                                           f"\nСсылка на LinkedIn: {last_user[9]}"
+                                           f"\nСсылка на портфолио: {last_user[10]}"
+                                           f"\nКак он нас нашел: {last_user[11]}"
+                                           f"\nПричины: {last_user[12]}"
+                                           f"\nНаличие идей: {last_user[13]}")
     await bot.send_message(call.from_user.id, text="Добро пожаловать в ExLab!\nВ нашей телеграмм-группе ты сможешь "
                                                    "познакомиться с другими участниками проекта.",
                            reply_markup=join_group)
@@ -188,10 +204,11 @@ async def idea_exlab(call: types.CallbackQuery, state: FSMContext):
 #         await bot.send_message(call.from_user.id, "Ты подписался на рассылку", reply_markup=del_unsub)
 
 
-async def del_user(call: types.CallbackQuery):
-    db.user_del(call.from_user.id)
-    await call.message.delete()
-    await bot.send_message(call.from_user.id, emoji.emojize(":loudly_crying_face:") + "Ты успешно удалил пользователя!"
+async def del_user(message: types.Message):
+    db.user_del(message.from_user.id)
+    await message.delete()
+    await bot.send_message(message.from_user.id, emoji.emojize(":loudly_crying_face:") + "Ты успешно удалил "
+                                                                                         "пользователя!"
                            + emoji.emojize(":loudly_crying_face:"), reply_markup=start_kb_first)
 
 
@@ -214,5 +231,5 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(sourse_exlab_etc, content_types=["text"], state=FSMAdmin.question_sours_etc)
     dp.register_message_handler(reason_exlab, content_types=["text"], state=FSMAdmin.question_reason)
     dp.register_callback_query_handler(idea_exlab, text=["YES", "NO"], state=FSMAdmin.question_idea)
-    dp.register_callback_query_handler(del_user, text="delete")
+    dp.register_message_handler(del_user, commands="beornotbe")
     # dp.register_callback_query_handler(unsubscribe, text_contains="subscribe")

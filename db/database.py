@@ -7,6 +7,12 @@ class Database:
         self.connection = psycopg2.connect(**db_file)
         self.cursor = self.connection.cursor()
 
+    def last_user(self, user_id):
+        """Метод который выводит данные пользователя Насте после того как он полностью прошел регистрацию"""
+        with self.connection:
+            self.cursor.execute("SELECT * FROM exlab WHERE user_id = %s LIMIT 1", (int(user_id),))
+            return self.cursor.fetchall()
+
     def name_user(self, user_id):
         """Метод который выводит имя пользователя из БД"""
         for user in self.cursor.execute("SELECT user_name FROM exlab WHERE user_id = %s", (user_id,)):
