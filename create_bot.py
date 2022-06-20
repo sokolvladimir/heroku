@@ -7,6 +7,8 @@ from db.database import Database
 storage = MemoryStorage()
 
 API_TOKEN = '5285312589:AAEYTN0vs3yLzYVn0R3iKR2xnX5pvCE_p00'
+# Мой токен
+# API_TOKEN = '5371740942:AAF9qKR5iMnlUVGAxwYBiD-78YPKI3d_kYU'
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

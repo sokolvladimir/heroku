@@ -1,8 +1,9 @@
 from aiogram import executor
 from create_bot import dp
-from handlers import admin
+from handlers import registration, interview_project
 
-admin.register_handlers_admin(dp)
+registration.register_handlers_registration(dp)
+# interview_project.register_handlers_registration(dp)
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

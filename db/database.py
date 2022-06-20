@@ -18,6 +18,13 @@ class Database:
         for user in self.cursor.execute("SELECT user_name FROM exlab WHERE user_id = %s", (user_id,)):
             return user[0]
 
+    def add_idea(self, data):
+        """Метод который добавляет идеи в таблицу"""
+        with self.connection:
+            return self.cursor.execute("INSERT INTO idea (about, problem, audience, how_work, differences, "
+                                       "monetization, pk_user_id) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                                       (data['about'], data['problem'], data['audience'], data['how_work'],
+                                        data['differences'], data['monetization'], data['user_id']))
     # def read_user(self, user_id):
     #     """Метод который выводит данные о пользователе из БД"""
     #     self.cursor.execute("SELECT * FROM exlab WHERE user_id = %s", (user_id,))

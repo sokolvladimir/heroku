@@ -1,9 +1,8 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from create_bot import bot
 from aiogram import types, Dispatcher
 from keyboards import *
-from create_bot import db, Nastya_id
+from create_bot import bot, db, Nastya_id
 import emoji
 import datetime
 import time
@@ -11,6 +10,7 @@ from aiogram.types import KeyboardButton, ReplyKeyboardRemove
 import validators
 import psycopg2
 from psycopg2.errors import *
+
 
 class FSMAdmin(StatesGroup):
     question_name = State()
@@ -191,7 +191,12 @@ async def idea_exlab(call: types.CallbackQuery, state: FSMContext):
                                                    "ExLab.", reply_markup=social_media)
     await bot.send_message(call.from_user.id, "Спасибо за регистрацию. Рады, что ты с нами!")
     await state.finish()
-
+    if call.data == "YES":
+        await bot.send_message(call.from_user.id, "Ты сказал что у тебя есть идея!\nРасскажи о своем проекте и мы "
+                                                  "поможем найти команду для его реализации.")
+    else:
+        await bot.send_message(call.from_user.id, "Когда появится идея нажимай кнопку и расскажи о своем проекте и мы "
+                                                  "поможем найти команду для его реализации.")
 
 # async def unsubscribe(call: types.CallbackQuery):
 #     if call.data == "unsubscribe":
@@ -212,7 +217,7 @@ async def del_user(message: types.Message):
                            + emoji.emojize(":loudly_crying_face:"), reply_markup=start_kb_first)
 
 
-def register_handlers_admin(dp: Dispatcher):
+def register_handlers_registration(dp: Dispatcher):
 
     dp.register_message_handler(start_program, commands="start")
     dp.register_callback_query_handler(start_question, text="start_quiz")

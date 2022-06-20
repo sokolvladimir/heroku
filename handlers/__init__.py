@@ -1,3 +1,3 @@
-from handlers import admin
+from handlers import registration
 from handlers import client
-from handlers import other
+from handlers import interview_project
