@@ -6,9 +6,9 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 storage = MemoryStorage()
 #
-# API_TOKEN = '5285312589:AAE2GIOyAAICFL0Ue9m4Qaf7Vj96lKl69FQ'
+API_TOKEN = '5285312589:AAE2GIOyAAICFL0Ue9m4Qaf7Vj96lKl69FQ'
 # Мой токен
-API_TOKEN = '5251328379:AAGDkd6xTZan-tCjmyCWU_hjQPEhRDtinWg'
+# API_TOKEN = '5251328379:AAGDkd6xTZan-tCjmyCWU_hjQPEhRDtinWg'
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -22,6 +22,5 @@ dp = Dispatcher(bot, storage=storage)
 #               host='vh104.hoster.by')
 
 # id Насти оно нужно для того что-бы передовать информацию при появлении нового пользователя
-# Nastya_id = 519610702
-Nastya_id = 545074878
+Nastya_id = 519610702
 
