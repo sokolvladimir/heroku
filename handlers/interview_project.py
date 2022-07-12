@@ -1,7 +1,7 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types, Dispatcher
-from create_bot import bot, db, Nastya_id
+from create_bot import bot, Nastya_id
 from keyboards import *
 
 

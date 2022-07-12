@@ -2,3 +2,6 @@ aiogram
 emoji
 psycopg2
 validators
+xlsxwriter
+mysql-connector-python
+

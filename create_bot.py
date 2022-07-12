@@ -2,13 +2,13 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from db.database import Database
+# from db.database import Database
 
 storage = MemoryStorage()
-
-API_TOKEN = '5285312589:AAEYTN0vs3yLzYVn0R3iKR2xnX5pvCE_p00'
+#
+# API_TOKEN = '5285312589:AAE2GIOyAAICFL0Ue9m4Qaf7Vj96lKl69FQ'
 # Мой токен
-# API_TOKEN = '5371740942:AAF9qKR5iMnlUVGAxwYBiD-78YPKI3d_kYU'
+API_TOKEN = '5251328379:AAGDkd6xTZan-tCjmyCWU_hjQPEhRDtinWg'
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -17,10 +17,11 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot, storage=storage)
 
-db = Database(dbname='d2setupduudqp6', user='hsrqfsvztotzlo',
-              password='8ac828c22e62c498e76eca2900d0b1c35ee5576e0ee26c63f641a6fc1378ce17',
-              host='ec2-34-231-177-125.compute-1.amazonaws.com')
+# db = Database(database='exlabtea_registration', user='exlabtea',
+#               password='FieKaek0',
+#               host='vh104.hoster.by')
 
 # id Насти оно нужно для того что-бы передовать информацию при появлении нового пользователя
-Nastya_id = 519610702
+# Nastya_id = 519610702
+Nastya_id = 545074878
 

@@ -1,16 +1,22 @@
-import psycopg2
+# import psycopg2
+import mysql.connector
 
 
 class Database:
     """Класс для работы с БД"""
     def __init__(self, **db_file):
-        self.connection = psycopg2.connect(**db_file)
+        self.connection = mysql.connector.connect(**db_file)
         self.cursor = self.connection.cursor()
 
     def last_user(self, user_id):
         """Метод который выводит данные пользователя Насте после того как он полностью прошел регистрацию"""
         with self.connection:
             self.cursor.execute("SELECT * FROM exlab WHERE user_id = %s LIMIT 1", (int(user_id),))
+            return self.cursor.fetchall()
+
+    def all_users(self):
+        with self.connection:
+            self.cursor.execute("SELECT * FROM exlab")
             return self.cursor.fetchall()
 
     def name_user(self, user_id):

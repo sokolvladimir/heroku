@@ -1,6 +1,6 @@
 from aiogram import executor
 from create_bot import dp
-from handlers import registration, interview_project
+from handlers import registration
 
 registration.register_handlers_registration(dp)
 # interview_project.register_handlers_registration(dp)
